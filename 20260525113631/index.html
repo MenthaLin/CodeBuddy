@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宝可梦图鉴 - Pokédex</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <svg class="pokeball-icon" viewBox="0 0 24 24" width="36" height="36">
+                    <circle cx="12" cy="12" r="11" fill="#fff" stroke="#333" stroke-width="1.5"/>
+                    <path d="M2 12h8c0 1.1.9 2 2 2s2-.9 2-2h8" fill="#e53935" stroke="#333" stroke-width="1.5"/>
+                    <circle cx="12" cy="12" r="3" fill="#fff" stroke="#333" stroke-width="1.5"/>
+                    <circle cx="12" cy="12" r="1.5" fill="#333"/>
+                </svg>
+                <h1>宝可梦图鉴</h1>
+            </div>
+            <div class="header-stats">
+                <span id="totalCount">加载中...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- 搜索和筛选区域 -->
+    <section class="search-section">
+        <div class="search-bar">
+            <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20">
+                <path fill="#999" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+            <input type="text" id="searchInput" placeholder="搜索宝可梦名称或编号...">
+            <button id="clearSearch" class="clear-btn" title="清除搜索">✕</button>
+        </div>
+
+        <div class="type-filters">
+            <button class="type-btn active" data-type="all">全部</button>
+            <button class="type-btn" data-type="normal">一般</button>
+            <button class="type-btn" data-type="fire">火</button>
+            <button class="type-btn" data-type="water">水</button>
+            <button class="type-btn" data-type="electric">电</button>
+            <button class="type-btn" data-type="grass">草</button>
+            <button class="type-btn" data-type="ice">冰</button>
+            <button class="type-btn" data-type="fighting">格斗</button>
+            <button class="type-btn" data-type="poison">毒</button>
+            <button class="type-btn" data-type="ground">地面</button>
+            <button class="type-btn" data-type="flying">飞行</button>
+            <button class="type-btn" data-type="psychic">超能力</button>
+            <button class="type-btn" data-type="bug">虫</button>
+            <button class="type-btn" data-type="rock">岩石</button>
+            <button class="type-btn" data-type="ghost">幽灵</button>
+            <button class="type-btn" data-type="dragon">龙</button>
+            <button class="type-btn" data-type="dark">恶</button>
+            <button class="type-btn" data-type="steel">钢</button>
+            <button class="type-btn" data-type="fairy">妖精</button>
+        </div>
+
+        <div class="sort-options">
+            <label>
+                <input type="radio" name="sort" value="id" checked> 按编号排序
+            </label>
+            <label>
+                <input type="radio" name="sort" value="name"> 按名称排序
+            </label>
+        </div>
+    </section>
+
+    <!-- 宝可梦列表 -->
+    <main class="pokemon-grid" id="pokemonGrid">
+        <!-- 动态生成 -->
+    </main>
+
+    <!-- 加载提示 -->
+    <div class="loading" id="loading">
+        <div class="pokeball-loader"></div>
+        <p>正在捕捉宝可梦...</p>
+    </div>
+
+    <!-- 加载更多按钮 -->
+    <div class="load-more-container" id="loadMoreContainer">
+        <button class="load-more-btn" id="loadMoreBtn">加载更多宝可梦</button>
+    </div>
+
+    <!-- 宝可梦详情弹窗 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="pokemonModal">
+            <button class="modal-close" id="modalClose">✕</button>
+            <div class="modal-content" id="modalContent">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop" title="返回顶部">↑</button>
+
+    <footer class="footer">
+        <p>数据来源：<a href="https://pokeapi.co/" target="_blank">PokéAPI</a> | 宝可梦图鉴 © 2026</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

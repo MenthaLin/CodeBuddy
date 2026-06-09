@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>贪吃蛇 Snake</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1e;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Microsoft YaHei',sans-serif;overflow:hidden;user-select:none}
+.game-box{background:linear-gradient(145deg,#1a1a3e,#0d0d2b);border-radius:20px;padding:20px;box-shadow:0 0 60px rgba(100,100,255,.15),0 20px 60px rgba(0,0,0,.5);border:2px solid rgba(120,120,255,.2)}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.title{font-size:26px;font-weight:800;background:linear-gradient(135deg,#00ff88,#00ccff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.scores{display:flex;gap:10px}
+.sc{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:6px 12px;text-align:center}
+.sc-l{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase}
+.sc-v{font-size:20px;font-weight:700;color:#fff}
+.sc-v.hi{background:linear-gradient(135deg,#ffcc00,#ff8800);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cw{position:relative;border-radius:10px;overflow:hidden;border:2px solid rgba(120,120,255,.15)}
+canvas{display:block;background:#0a0a1e}
+.footer{display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px}
+.info{display:flex;gap:8px;align-items:center;font-size:12px;color:rgba(255,255,255,.5)}
+.key{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:5px;font-size:11px;color:rgba(255,255,255,.7);font-weight:600;margin:0 2px}
+.btn{padding:8px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-go{background:linear-gradient(135deg,#00ff88,#00cc66);color:#0a0a1e;box-shadow:0 4px 15px rgba(0,255,136,.3)}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(0,255,136,.4)}
+.btn-ps{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2)}
+.btn-ps:hover{background:rgba(255,255,255,.15)}
+.mctl{display:none;grid-template-areas:'. u .' 'l . r' '. d .';grid-template-columns:repeat(3,55px);grid-template-rows:repeat(3,55px);gap:5px;margin-top:12px;justify-content:center}
+.dbtn{width:55px;height:55px;border-radius:12px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:20px;cursor:pointer;transition:all .1s;display:flex;align-items:center;justify-content:center}
+.dbtn:active{background:rgba(0,255,136,.2);transform:scale(.9)}
+.du{grid-area:u}.dd{grid-area:d}.dl{grid-area:l}.dr{grid-area:r}
+.go{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:5}
+.go.ac{pointer-events:all}
+.got{font-size:32px;font-weight:800;color:#ff4466;text-shadow:0 0 30px rgba(255,68,102,.6);margin-bottom:8px;opacity:0;transform:scale(.5);transition:all .4s cubic-bezier(.175,.885,.32,1.275)}
+.got.s{opacity:1;transform:scale(1)}
+.gosc{font-size:16px;color:rgba(255,255,255,.7);margin-bottom:16px;opacity:0;transform:translateY(10px);transition:all .4s ease .1s}
+.gosc.s{opacity:1;transform:translateY(0)}
+.gobt{opacity:0;transform:translateY(10px);transition:all .4s ease .2s}
+.gobt.s{opacity:1;transform:translateY(0)}
+@media(max-width:600px){.game-box{padding:10px;border-radius:14px}.title{font-size:20px}.mctl{display:grid}.info{display:none}.footer{justify-content:center}}
+</style>
+</head>
+<body>
+<div class="game-box">
+<div class="header">
+<h1 class="title">Snake 贪吃蛇</h1>
+<div class="scores">
+<div class="sc"><div class="sc-l">得分</div><div class="sc-v" id="sc">0</div></div>
+<div class="sc"><div class="sc-l">最高</div><div class="sc-v hi" id="hs">0</div></div>
+<div class="sc"><div class="sc-l">长度</div><div class="sc-v" id="ln">3</div></div>
+</div>
+</div>
+<div class="cw" id="cw">
+<canvas id="cv"></canvas>
+<div class="go" id="go">
+<div class="got" id="got">游戏结束</div>
+<div class="gosc" id="gosc">最终得分：0</div>
+<div class="gobt"><button class="btn btn-go" onclick="rst()">再来一局</button></div>
+</div>
+</div>
+<div class="footer">
+<div class="info"><span class="key">WASD</span>/<span class="key">↑↓←→</span>移动 <span class="key">P</span>暂停</div>
+<div><button class="btn btn-ps" id="bp" onclick="tog()">暂停</button>
+<button class="btn btn-go" onclick="rst()">新游戏</button></div>
+</div>
+<div class="mctl">
+<button class="dbtn du" onpointerdown="sd('up')">▲</button>
+<button class="dbtn dl" onpointerdown="sd('left')">◀</button>
+<button class="dbtn dr" onpointerdown="sd('right')">▶</button>
+<button class="dbtn dd" onpointerdown="sd('down')">▼</button>
+</div>
+</div>
+<script>
+(function(){
+var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+var G=20,C=20,R=20,W=C*G,H=R*G;
+cv.width=W;cv.height=H;
+function rz(){var s=Math.min(window.innerWidth-40,window.innerHeight-340,440);cv.style.width=s+'px';cv.style.height=s+'px'}
+rz();window.addEventListener('resize',rz);
+
+var sn=[],fd=null,dir='right',nd='right',sc=0,hs=parseInt(localStorage.getItem('shs'))||0;
+var gl=null,run=false,psd=false,gov=false,spd=120,pts=[];
+
+var se=document.getElementById('sc'),he=document.getElementById('hs'),le=document.getElementById('ln');
+var goe=document.getElementById('go'),gte=document.getElementById('got'),gse=document.getElementById('gosc'),bpe=document.getElementById('bp');
+he.textContent=hs;
+
+function isn(){sn=[];var sx=Math.floor(C/2),sy=Math.floor(R/2);for(var i=0;i<3;i++)sn.push({x:sx-i,y:sy})}
+function spf(){var p;do{p={x:Math.floor(Math.random()*C),y:Math.floor(Math.random()*R)}}while(sn.some(function(s){return s.x===p.x&&s.y===p.y}));
+fd={x:p.x,y:p.y,bonus:Math.random()<0.1,pulse:0}}
+function ap(x,y,c){for(var i=0;i<8;i++){var a=Math.PI*2/8*i;pts.push({x:x*G+G/2,y:y*G+G/2,vx:Math.cos(a)*(Math.random()*2+1),vy:Math.sin(a)*(Math.random()*2+1),life:1,decay:Math.random()*.03+.02,size:Math.random()*3+2,color:c})}}
+function up(){for(var i=pts.length-1;i>=0;i--){var p=pts[i];p.x+=p.vx;p.y+=p.vy;p.life-=p.decay;if(p.life<=0)pts.splice(i,1)}}
+function dp(){for(var i=0;i<pts.length;i++){var p=pts[i];ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();ctx.restore()}}
+
+function draw(){
+ctx.clearRect(0,0,W,H);
+ctx.strokeStyle='rgba(255,255,255,.02)';ctx.lineWidth=.5;
+for(var x=0;x<=C;x++){ctx.beginPath();ctx.moveTo(x*G,0);ctx.lineTo(x*G,H);ctx.stroke()}
+for(var y=0;y<=R;y++){ctx.beginPath();ctx.moveTo(0,y*G);ctx.lineTo(W,y*G);ctx.stroke()}
+
+for(var i=1;i<sn.length;i++){var sg=sn[i],a=1-i/sn.length*.6;ctx.fillStyle='rgba(0,255,136,'+(a*.08)+')';ctx.fillRect(sg.x*G+1,sg.y*G+1,G-2,G-2)}
+
+for(var i=0;i<sn.length;i++){
+var sg=sn[i],x=sg.x*G,y=sg.y*G,pd=2;
+if(i===0){
+var gd=ctx.createLinearGradient(x,y,x+G,y+G);gd.addColorStop(0,'#00ffaa');gd.addColorStop(1,'#00cc66');
+ctx.fillStyle=gd;ctx.shadowColor='rgba(0,255,136,.6)';ctx.shadowBlur=10;
+ctx.beginPath();ctx.roundRect(x+1,y+1,G-2,G-2,5);ctx.fill();
+ctx.shadowBlur=0;ctx.fillStyle='#fff';
+var ex1,ey1,ex2,ey2,er=3,eo=5;
+switch(dir){case'right':ex1=x+G-7;ey1=y+6;ex2=x+G-7;ey2=y+G-6;break;case'left':ex1=x+7;ey1=y+6;ex2=x+7;ey2=y+G-6;break;case'up':ex1=x+6;ey1=y+7;ex2=x+G-6;ey2=y+7;break;case'down':ex1=x+6;ey1=y+G-7;ex2=x+G-6;ey2=y+G-7;break}
+ctx.beginPath();ctx.arc(ex1,ey1,er,0,Math.PI*2);ctx.arc(ex2,ey2,er,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#0a0a1e';ctx.beginPath();ctx.arc(ex1,ey1,1.5,0,Math.PI*2);ctx.arc(ex2,ey2,1.5,0,Math.PI*2);ctx.fill()
+}else{
+var pr=i/sn.length,al=1-pr*.4,gv=255,rv=Math.floor(pr*100);
+ctx.fillStyle='rgba('+rv+','+gv+','+Math.floor(136-pr*80)+','+al+')';
+ctx.shadowColor='rgba(0,255,136,'+(al*.3)+')';ctx.shadowBlur=4;
+ctx.beginPath();ctx.roundRect(x+pd,y+pd,G-pd*2,G-pd*2,4);ctx.fill()
+}
+}
+ctx.shadowBlur=0;
+
+if(fd){
+var fx=fd.x*G+G/2,fy=fd.y*G+G/2;fd.pulse=(fd.pulse+.05)%(Math.PI*2);var ps=1+Math.sin(fd.pulse)*.15;
+if(fd.bonus){
+var gd=ctx.createRadialGradient(fx,fy,1,fx,fy,G/2*ps);gd.addColorStop(0,'#fff8c0');gd.addColorStop(.5,'#ffcc00');gd.addColorStop(1,'#ff8800');
+ctx.fillStyle=gd;ctx.shadowColor='#ffcc00';ctx.shadowBlur=15;
+ctx.beginPath();var rot=Math.PI/2*3,step=Math.PI/5;ctx.moveTo(fx,fy-G/2*ps);
+for(var j=0;j<5;j++){ctx.lineTo(fx+Math.cos(rot)*G/2*ps,fy+Math.sin(rot)*G/2*ps);rot+=step;ctx.lineTo(fx+Math.cos(rot)*G/4*ps,fy+Math.sin(rot)*G/4*ps);rot+=step}
+ctx.closePath();ctx.fill();ctx.shadowBlur=0
+}else{
+var gd=ctx.createRadialGradient(fx-2,fy-2,1,fx,fy,G/2*ps);gd.addColorStop(0,'#ff6666');gd.addColorStop(1,'#cc2233');
+ctx.fillStyle=gd;ctx.shadowColor='rgba(255,50,50,.6)';ctx.shadowBlur=10;
+ctx.beginPath();ctx.arc(fx,fy,(G/2-2)*ps,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0
+}
+}
+dp();
+if(psd&&!gov){ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 24px "Microsoft YaHei",sans-serif';ctx.textAlign='center';ctx.fillText('已暂停',W/2,H/2);ctx.textAlign='start'}
+}
+
+function upd(){
+if(!run||psd||gov)return;
+dir=nd;
+var hd={x:sn[0].x,y:sn[0].y};
+switch(dir){case'up':hd.y--;break;case'down':hd.y++;break;case'left':hd.x--;break;case'right':hd.x++}
+if(hd.x<0)hd.x=C-1;if(hd.x>=C)hd.x=0;if(hd.y<0)hd.y=R-1;if(hd.y>=R)hd.y=0;
+if(sn.some(function(s){return s.x===hd.x&&s.y===hd.y})){go();return}
+sn.unshift(hd);
+if(fd&&hd.x===fd.x&&hd.y===fd.y){var pts=fd.bonus?5:1;sc+=pts;se.textContent=sc;le.textContent=sn.length;ap(fd.x,fd.y,fd.bonus?'#ffcc00':'#ff4444');spf();if(sc%5===0&&spd>60){spd-=5;clearInterval(gl);gl=setInterval(tick,spd)}if(sc>hs){hs=sc;he.textContent=hs;localStorage.setItem('shs',hs)}}else{sn.pop()}
+}
+
+function tick(){upd();up();draw()}
+function go(){gov=true;run=false;clearInterval(gl);ap(sn[0].x,sn[0].y,'#ff4466');gse.textContent='最终得分：'+sc;goe.classList.add('ac');setTimeout(function(){gte.classList.add('s')},100);setTimeout(function(){gse.classList.add('s')},200);setTimeout(function(){var b=goe.querySelector('.gobt');if(b)b.classList.add('s')},300);bpe.textContent='暂停';if(sc>hs){hs=sc;he.textContent=hs;localStorage.setItem('shs',hs)}}
+window.sd=function(d){if(!run||gov)return;var op={up:'down',down:'up',left:'right',right:'left'};if(op[d]!==dir)nd=d}
+window.tog=function(){if(gov||!run)return;psd=!psd;bpe.textContent=psd?'继续':'暂停';if(!psd)draw()}
+window.rst=function(){clearInterval(gl);isn();dir='right';nd='right';sc=0;spd=120;run=true;psd=false;gov=false;pts=[];se.textContent='0';le.textContent='3';bpe.textContent='暂停';goe.classList.remove('ac');gte.classList.remove('s');gse.classList.remove('s');var b=goe.querySelector('.gobt');if(b)b.classList.remove('s');spf();draw();gl=setInterval(tick,spd)}
+
+document.addEventListener('keydown',function(e){var km={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',W:'up',s:'down',S:'down',a:'left',A:'left',d:'right',D:'right'};if(km[e.key]){e.preventDefault();sd(km[e.key])}if(e.key==='p'||e.key==='P'){e.preventDefault();tog()}if(e.key===' '&&!run){e.preventDefault();rst()}});
+
+var tsx=0,tsy=0;
+cv.addEventListener('touchstart',function(e){tsx=e.touches[0].clientX;tsy=e.touches[0].clientY},{passive:true});
+cv.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-tsx,dy=e.changedTouches[0].clientY-tsy,ms=30;if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>ms){sd(dx>0?'right':'left')}else if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>ms){sd(dy>0?'down':'up')}});
+
+rst();
+})();
+</script>
+</body>
+</html>
