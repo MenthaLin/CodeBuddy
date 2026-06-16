@@ -1,0 +1,82 @@
+[
+  {
+    "id":"p_001","type":"vocab","question":"What does 'happy' mean?",
+    "options":["悲伤的","快乐的","愤怒的","疲惫的"],"correctIndex":1,"difficulty":"A1"
+  },
+  {
+    "id":"p_002","type":"vocab","question":"Choose the correct spelling:",
+    "options":["beautifull","beautiful","beautifal","beautyful"],"correctIndex":1,"difficulty":"A1"
+  },
+  {
+    "id":"p_003","type":"grammar","question":"She ___ to school every day.",
+    "options":["go","goes","going","gone"],"correctIndex":1,"difficulty":"A1"
+  },
+  {
+    "id":"p_004","type":"grammar","question":"I ___ a student.",
+    "options":["am","is","are","be"],"correctIndex":0,"difficulty":"A1"
+  },
+  {
+    "id":"p_005","type":"listen","question":"Listen and choose the word: (cat)",
+    "options":["cap","cat","cut","cot"],"correctIndex":1,"difficulty":"A1"
+  },
+  {
+    "id":"p_006","type":"vocab","question":"What does 'enormous' mean?",
+    "options":["微小的","快速的","巨大的","缓慢的"],"correctIndex":2,"difficulty":"B1"
+  },
+  {
+    "id":"p_007","type":"grammar","question":"If I ___ you, I would accept the offer.",
+    "options":["am","was","were","be"],"correctIndex":2,"difficulty":"B1"
+  },
+  {
+    "id":"p_008","type":"vocab","question":"Choose the correct word: The weather is very ___ today.",
+    "options":["pleased","pleasant","pleasure","pleasing"],"correctIndex":1,"difficulty":"B1"
+  },
+  {
+    "id":"p_009","type":"grammar","question":"He has been waiting ___ two hours.",
+    "options":["since","for","during","while"],"correctIndex":1,"difficulty":"A2"
+  },
+  {
+    "id":"p_010","type":"listen","question":"Listen and choose the word: (table)",
+    "options":["table","tablet","tail","tale"],"correctIndex":0,"difficulty":"A2"
+  },
+  {
+    "id":"p_011","type":"vocab","question":"What does 'ambiguous' mean?",
+    "options":["清晰的","模糊的","确定的","简单的"],"correctIndex":1,"difficulty":"C1"
+  },
+  {
+    "id":"p_012","type":"grammar","question":"Not only ___ speak English, but also French.",
+    "options":["he does","does he","he is","is he"],"correctIndex":1,"difficulty":"B2"
+  },
+  {
+    "id":"p_013","type":"vocab","question":"The word 'benevolent' is closest in meaning to:",
+    "options":["cruel","kind","angry","selfish"],"correctIndex":1,"difficulty":"B2"
+  },
+  {
+    "id":"p_014","type":"grammar","question":"I wish I ___ harder for the exam.",
+    "options":["study","studied","had studied","would study"],"correctIndex":2,"difficulty":"C1"
+  },
+  {
+    "id":"p_015","type":"listen","question":"Listen and choose the word: (adventure)",
+    "options":["adventure","advantage","advertisement","advent"],"correctIndex":0,"difficulty":"B1"
+  },
+  {
+    "id":"p_016","type":"vocab","question":"What does 'meticulous' mean?",
+    "options":["粗心的","懒惰的","一丝不苟的","快速的"],"correctIndex":2,"difficulty":"C1"
+  },
+  {
+    "id":"p_017","type":"grammar","question":"The number of students ___ increasing.",
+    "options":["are","is","were","have"],"correctIndex":1,"difficulty":"B2"
+  },
+  {
+    "id":"p_018","type":"listen","question":"Listen and choose the word: (chocolate)",
+    "options":["chocolate","chocolates","chalk","chicken"],"correctIndex":0,"difficulty":"B1"
+  },
+  {
+    "id":"p_019","type":"vocab","question":"Which word means 'everywhere at the same time'?",
+    "options":["unique","ubiquitous","unanimous","ultimate"],"correctIndex":1,"difficulty":"C2"
+  },
+  {
+    "id":"p_020","type":"grammar","question":"Were the government ___ intervene, the crisis could be averted.",
+    "options":["to","for","in","at"],"correctIndex":0,"difficulty":"C2"
+  }
+]

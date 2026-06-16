@@ -1,0 +1,24 @@
+{
+  "achievements": [
+    {"key":"first_game","name":"初出茅庐","description":"完成任意1局游戏","icon":"🎮","category":"game","rarity":"common"},
+    {"key":"all_games","name":"全能选手","description":"完成全部4款游戏各1局","icon":"⭐","category":"game","rarity":"rare"},
+    {"key":"combo_10","name":"连击新星","description":"单局达成10连击","icon":"🔥","category":"combo","rarity":"common"},
+    {"key":"combo_30","name":"连击大师","description":"单局达成30连击","icon":"⚡","category":"combo","rarity":"epic"},
+    {"key":"spelling_100","name":"百词斩","description":"累计拼对100个单词","icon":"✍️","category":"score","rarity":"rare"},
+    {"key":"grammar_100","name":"语法纠察官","description":"累计修正100个语法错误","icon":"📝","category":"score","rarity":"rare"},
+    {"key":"listen_100","name":"顺风耳","description":"累计听音选对100题","icon":"👂","category":"score","rarity":"rare"},
+    {"key":"match_50","name":"连连看达人","description":"完成50关连连看","icon":"🧩","category":"score","rarity":"rare"},
+    {"key":"score_10000","name":"万分户","description":"累计总分达到10000","icon":"💰","category":"score","rarity":"epic"},
+    {"key":"level_b2","name":"B2 进阶者","description":"达到 B2 等级","icon":"📈","category":"level","rarity":"rare"},
+    {"key":"level_c1","name":"C1 高手","description":"达到 C1 等级","icon":"🎓","category":"level","rarity":"epic"},
+    {"key":"level_c2","name":"C2 大师","description":"达到 C2 等级","icon":"👑","category":"level","rarity":"legendary"},
+    {"key":"perfect_grammar","name":"语法满分","description":"语法改错单局100%正确率","icon":"💯","category":"special","rarity":"epic"},
+    {"key":"speed_demon","name":"闪电侠","description":"听音选词平均2秒内作答","icon":"⚡","category":"special","rarity":"rare"},
+    {"key":"placement_first","name":"摸底完毕","description":"完成定级测试","icon":"📋","category":"special","rarity":"common"},
+    {"key":"streak_7","name":"全勤一周","description":"连续7天完成每日挑战","icon":"📅","category":"streak","rarity":"epic"},
+    {"key":"welcome_week","name":"新手周","description":"注册7天内完成10局游戏","icon":"🌟","category":"special","rarity":"rare"},
+    {"key":"no_hint_match","name":"独立通关","description":"不使用提示完成连连看一关","icon":"🧠","category":"special","rarity":"rare"},
+    {"key":"combo_20","name":"连击达人","description":"单局达成20连击","icon":"💥","category":"combo","rarity":"rare"},
+    {"key":"games_50","name":"游戏达人","description":"累计完成50局游戏","icon":"🎯","category":"game","rarity":"rare"}
+  ]
+}
