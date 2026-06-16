@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>扫雷 - Minesweeper</title>
+  <link rel="stylesheet" href="client/css/style.css">
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <header class="header">
+    <div class="header-left">
+      <h1 class="logo">💣 扫雷</h1>
+    </div>
+    <div class="header-right" id="userArea">
+      <!-- 未登录状态 -->
+      <button class="btn btn-sm" id="btnLogin">👤 登录</button>
+      <!-- 已登录状态 -->
+      <span class="user-info hidden" id="userInfo">
+        <span class="user-nickname" id="userNickname"></span>
+        <button class="btn btn-sm" id="btnLogout">🚪 退出</button>
+      </span>
+    </div>
+  </header>
+
+  <!-- 游戏主区域 -->
+  <main class="main">
+    <!-- 游戏状态栏 -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-label">🚩</span>
+        <span class="status-value" id="mineCounter">000</span>
+      </div>
+      <div class="status-item">
+        <button class="btn btn-face" id="btnFace">😊</button>
+      </div>
+      <div class="status-item">
+        <span class="status-label">⏱</span>
+        <span class="status-value" id="timerDisplay">00:00</span>
+      </div>
+    </div>
+
+    <!-- 棋盘容器 -->
+    <div class="board-container">
+      <div class="board" id="board"></div>
+      <!-- 暂停遮罩 -->
+      <div class="pause-overlay hidden" id="pauseOverlay">
+        <div class="pause-text">⏸ 游戏已暂停</div>
+        <button class="btn btn-primary" id="btnResume">▶ 继续游戏</button>
+      </div>
+      <!-- 游戏结束遮罩 -->
+      <div class="game-over-overlay hidden" id="gameOverOverlay">
+        <div class="game-over-content" id="gameOverContent"></div>
+      </div>
+    </div>
+
+    <!-- 控制栏 -->
+    <div class="control-bar">
+      <div class="difficulty-group">
+        <button class="btn btn-difficulty active" data-difficulty="easy">初级</button>
+        <button class="btn btn-difficulty" data-difficulty="medium">中级</button>
+        <button class="btn btn-difficulty" data-difficulty="hard">高级</button>
+      </div>
+      <div class="action-group">
+        <button class="btn btn-primary" id="btnNewGame">🔄 新游戏</button>
+        <button class="btn" id="btnPause">⏯ 暂停</button>
+        <button class="btn" id="btnRecords">📋 我的记录</button>
+        <button class="btn" id="btnLeaderboard">🏆 排行榜</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- 登录弹窗 -->
+  <div class="modal hidden" id="loginModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <h2>👤 输入昵称</h2>
+      <p class="modal-desc">输入昵称即可开始游戏，记录你的最佳成绩！</p>
+      <input type="text" class="input" id="loginNickname" placeholder="请输入昵称（中英文、数字、下划线）" maxlength="50" autocomplete="off">
+      <p class="error-msg hidden" id="loginError"></p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="btnLoginConfirm">确认登录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 排行榜弹窗 -->
+  <div class="modal hidden" id="leaderboardModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-wide">
+      <h2>🏆 排行榜</h2>
+      <div class="tabs">
+        <button class="tab active" data-tab-diff="easy">初级</button>
+        <button class="tab" data-tab-diff="medium">中级</button>
+        <button class="tab" data-tab-diff="hard">高级</button>
+      </div>
+      <div class="leaderboard-table-wrap">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>排名</th>
+              <th>玩家</th>
+              <th>最佳时间</th>
+              <th>完成日期</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <tr><td colspan="4" class="empty-msg">加载中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="btnCloseLeaderboard">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 我的记录弹窗 -->
+  <div class="modal hidden" id="recordsModal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-wide">
+      <h2>📋 我的记录</h2>
+      <div class="user-stats" id="userStats"></div>
+      <div class="tabs">
+        <button class="tab active" data-records-filter="all">全部</button>
+        <button class="tab" data-records-filter="easy">初级</button>
+        <button class="tab" data-records-filter="medium">中级</button>
+        <button class="tab" data-records-filter="hard">高级</button>
+      </div>
+      <div class="records-table-wrap">
+        <table class="records-table">
+          <thead>
+            <tr>
+              <th>难度</th>
+              <th>结果</th>
+              <th>用时</th>
+              <th>日期</th>
+            </tr>
+          </thead>
+          <tbody id="recordsBody">
+            <tr><td colspan="4" class="empty-msg">暂无记录</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" id="btnCloseRecords">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <p>扫雷 Minesweeper | 经典休闲游戏</p>
+  </footer>
+
+  <!-- JavaScript 模块 -->
+  <script type="module" src="client/js/app.js"></script>
+</body>
+</html>
