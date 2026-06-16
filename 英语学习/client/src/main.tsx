@@ -11,7 +11,7 @@ import './index.css';
 // 渲染根组件
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/CodeBuddy">
       <App />
     </BrowserRouter>
   </React.StrictMode>,

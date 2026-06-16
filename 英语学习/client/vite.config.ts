@@ -4,6 +4,7 @@ import path from 'path';
 
 // Vite 构建配置 - English Fun Zone
 export default defineConfig({
+  base: '/CodeBuddy/',
   plugins: [react()],
   resolve: {
     alias: {
