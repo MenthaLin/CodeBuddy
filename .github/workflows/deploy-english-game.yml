@@ -1,0 +1,40 @@
+name: Deploy English Fun Zone to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '英语学习/client/**'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 英语学习/client
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: 英语学习/client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: 英语学习/client/dist
+          publish_branch: gh-pages
+          commit_message: 'deploy: English Fun Zone [ci skip]'
