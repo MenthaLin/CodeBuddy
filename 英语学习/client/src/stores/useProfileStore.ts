@@ -61,6 +61,12 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
     if (!user) return;
 
     try {
+      if (!supabase) {
+        // 无 Supabase，回退到游客成就
+        const guestData = getGuestData();
+        set({ unlockedAchievements: guestData.achievements || [] });
+        return;
+      }
       const { data, error } = await supabase
         .from('achievements')
         .select('achievement_key')
@@ -170,7 +176,7 @@ export const useProfileStore = create<ProfileState>((set, get) => ({
     if (isGuest) {
       saveGuestData({ isPlacementDone: true, level });
       useAuthStore.getState().updateGuestLevel(level);
-    } else if (user) {
+    } else if (user && supabase) {
       await supabase
         .from('profiles')
         .update({ is_placement_done: true, level, updated_at: new Date().toISOString() })

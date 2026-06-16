@@ -56,7 +56,7 @@ export const useChallengeStore = create<ChallengeState>((set, get) => ({
       return;
     }
 
-    if (!user) {
+    if (!user || !supabase) {
       set({ loaded: true });
       return;
     }
@@ -123,7 +123,7 @@ export const useChallengeStore = create<ChallengeState>((set, get) => ({
       ),
     }));
 
-    if (!isGuest && user) {
+    if (!isGuest && user && supabase) {
       const challenge = get().challenges.find(c => c.challengeKey === challengeKey);
       if (challenge) {
         await supabase.from('daily_challenges').upsert({

@@ -1,8 +1,10 @@
 /**
  * lib/storage-adapter.ts - localStorage ↔ Supabase 适配器
  * English Fun Zone
+ *
+ * 当 Supabase 未配置时，所有云端操作自动降级为静默跳过（localStorage 仍正常）。
  */
-import { supabase } from './supabase';
+import { supabase, hasSupabase } from './supabase';
 import type { Level, GameRecord, GameResult } from '@/types/game';
 import type { GuestData, UserSettings, GameHistoryEntry } from '@/types/user';
 import { STORAGE_KEYS } from '@/config/constants';
@@ -89,6 +91,7 @@ export function addGuestGameRecord(record: GameHistoryEntry): void {
 
 /** 保存游戏记录到 Supabase */
 export async function saveGameRecord(userId: string, result: GameResult): Promise<void> {
+  if (!supabase) return;
   const { error } = await supabase.from('game_records').insert({
     user_id: userId,
     game_type: result.gameType,
@@ -112,6 +115,7 @@ export async function saveGameRecord(userId: string, result: GameResult): Promis
 
 /** 更新用户等级 */
 export async function updateUserLevel(userId: string, level: Level): Promise<void> {
+  if (!supabase) return;
   const { error } = await supabase
     .from('profiles')
     .update({ level, updated_at: new Date().toISOString() })
@@ -124,6 +128,7 @@ export async function updateUserLevel(userId: string, level: Level): Promise<voi
 
 /** 更新用户总分 */
 export async function updateUserScore(userId: string, addScore: number): Promise<void> {
+  if (!supabase) return;
   const { error } = await supabase.rpc('increment_score', {
     user_id: userId,
     score_increment: addScore,
@@ -136,6 +141,7 @@ export async function updateUserScore(userId: string, addScore: number): Promise
 
 /** 获取用户档案 */
 export async function fetchProfile(userId: string) {
+  if (!supabase) return null;
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
@@ -151,6 +157,7 @@ export async function fetchProfile(userId: string) {
 
 /** 获取用户成就 */
 export async function fetchAchievements(userId: string): Promise<string[]> {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('achievements')
     .select('achievement_key')
@@ -169,6 +176,7 @@ export async function unlockAchievement(
   userId: string,
   achievementKey: string,
 ): Promise<boolean> {
+  if (!supabase) return false;
   const { error } = await supabase.from('achievements').insert({
     user_id: userId,
     achievement_key: achievementKey,
@@ -188,6 +196,7 @@ export async function unlockAchievement(
 
 /** 获取每日挑战 */
 export async function fetchDailyChallenges(userId: string, dateStr: string) {
+  if (!supabase) return [];
   const { data, error } = await supabase
     .from('daily_challenges')
     .select('*')
@@ -210,6 +219,7 @@ export async function updateChallengeProgress(
   progress: number,
   target: number,
 ): Promise<void> {
+  if (!supabase) return;
   const completed = progress >= target;
 
   const { error } = await supabase.from('daily_challenges').upsert({
@@ -237,6 +247,7 @@ export async function savePlacementResult(
   listenScore: number,
   totalScore: number,
 ): Promise<void> {
+  if (!supabase) return;
   const { error } = await supabase.from('placement_tests').insert({
     user_id: userId,
     result_level: resultLevel,
@@ -264,6 +275,7 @@ export async function savePlacementResult(
  * 策略：取等级高的、取总分累加、取成就并集
  */
 export async function migrateGuestToCloud(userId: string): Promise<void> {
+  if (!supabase) return;
   const guestData = getGuestData();
 
   // 如果游客没有有效数据，跳过

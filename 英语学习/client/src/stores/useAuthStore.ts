@@ -3,7 +3,7 @@
  * English Fun Zone
  */
 import { create } from 'zustand';
-import { supabase } from '@/lib/supabase';
+import { supabase, hasSupabase } from '@/lib/supabase';
 import { migrateGuestToCloud, getGuestData, saveGuestData } from '@/lib/storage-adapter';
 import type { AuthUser, UserProfile, UserSession } from '@/types/user';
 import type { Level } from '@/types/game';
@@ -36,6 +36,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   loading: true,
 
   initialize: () => {
+    // 未配置 Supabase → 直接进入纯游客模式
+    if (!hasSupabase || !supabase) {
+      get().initGuest();
+      set({ loading: false });
+      return;
+    }
+
     // 监听 Supabase Auth 状态变化
     supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
@@ -98,6 +105,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signUp: async (email, password, nickname) => {
+    if (!supabase) return { error: 'Supabase 未配置，仅支持游客模式' };
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -111,6 +119,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signIn: async (email, password) => {
+    if (!supabase) return { error: 'Supabase 未配置，仅支持游客模式' };
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -121,6 +130,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signInWithGoogle: async () => {
+    if (!supabase) return;
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -130,14 +140,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signOut: async () => {
-    await supabase.auth.signOut();
+    if (supabase) await supabase.auth.signOut();
     set({ user: null, profile: null, isGuest: true });
     get().initGuest();
   },
 
   refreshProfile: async () => {
     const { user } = get();
-    if (!user) return;
+    if (!user || !supabase) return;
 
     try {
       const { data, error } = await supabase
