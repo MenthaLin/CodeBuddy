@@ -5,10 +5,22 @@ on:
     branches: [main]
     paths:
       - '英语学习/client/**'
+      - '.github/workflows/deploy-english-game.yml'
   workflow_dispatch:
 
+# 设置 GITHUB_TOKEN 权限以支持 GitHub Pages 部署
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 并发控制：同一时间只运行一个部署
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,11 +51,22 @@ jobs:
       - name: Build
         run: npx vite build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: 英语学习/client/dist
-          publish_branch: gh-pages
-          enable_jekyll: false
-          commit_message: 'deploy: English Fun Zone [ci skip]'
+          path: 英语学习/client/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
