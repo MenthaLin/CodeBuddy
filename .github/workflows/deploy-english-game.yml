@@ -8,19 +8,8 @@ on:
       - '.github/workflows/deploy-english-game.yml'
   workflow_dispatch:
 
-# 设置 GITHUB_TOKEN 权限以支持 GitHub Pages 部署
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# 并发控制：同一时间只运行一个部署
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -34,39 +23,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: 英语学习/client/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
       - name: Setup env (optional Supabase)
         run: |
-          echo "VITE_SUPABASE_URL=$SUPA_URL" > .env
-          echo "VITE_SUPABASE_ANON_KEY=$SUPA_KEY" >> .env
+          echo VITE_SUPABASE_URL=$SUPA_URL >> .env
+          echo VITE_SUPABASE_ANON_KEY=$SUPA_KEY >> .env
         env:
           SUPA_URL: ${{ secrets.VITE_SUPABASE_URL }}
           SUPA_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Build
-        run: npx vite build
+        run: npm run build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 英语学习/client/dist
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: 英语学习/client/dist
+          publish_branch: gh-pages
+          enable_jekyll: false
+          commit_message: 'deploy: English Fun Zone [ci skip]'
