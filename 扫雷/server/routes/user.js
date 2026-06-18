@@ -28,7 +28,7 @@ router.post('/login', async (req, res) => {
 
     // 检查昵称是否已被其他人使用
     const { data: existingUser } = await supabaseAdmin
-      .from('users')
+      .from('minesweeper_users')
       .select('id, nickname')
       .eq('nickname', trimmedNickname)
       .single();
@@ -39,7 +39,7 @@ router.post('/login', async (req, res) => {
 
     // 如果已存在同 ID 用户，更新昵称；否则创建新用户
     const { data: currentUser } = await supabaseAdmin
-      .from('users')
+      .from('minesweeper_users')
       .select('id')
       .eq('id', supabase_uid)
       .single();
@@ -48,7 +48,7 @@ router.post('/login', async (req, res) => {
     if (currentUser) {
       // 更新昵称
       const { data: updated, error: updateErr } = await supabaseAdmin
-        .from('users')
+        .from('minesweeper_users')
         .update({ nickname: trimmedNickname })
         .eq('id', supabase_uid)
         .select()
@@ -58,7 +58,7 @@ router.post('/login', async (req, res) => {
     } else {
       // 创建新用户
       const { data: created, error: createErr } = await supabaseAdmin
-        .from('users')
+        .from('minesweeper_users')
         .insert({ id: supabase_uid, nickname: trimmedNickname })
         .select()
         .single();
@@ -99,7 +99,7 @@ router.get('/profile', async (req, res) => {
     }
 
     const { data: user, error } = await supabaseAdmin
-      .from('users')
+      .from('minesweeper_users')
       .select('*')
       .eq('id', supabase_uid)
       .single();
@@ -141,7 +141,7 @@ router.get('/stats', async (req, res) => {
  */
 async function getUserStats(userId) {
   const { data: records, error } = await supabaseAdmin
-    .from('game_records')
+    .from('minesweeper_records')
     .select('difficulty, result, time_seconds')
     .eq('user_id', userId);
 

@@ -34,7 +34,7 @@ router.post('/record', async (req, res) => {
 
     // 验证用户存在
     const { data: user } = await supabaseAdmin
-      .from('users')
+      .from('minesweeper_users')
       .select('id')
       .eq('id', supabase_uid)
       .single();
@@ -45,7 +45,7 @@ router.post('/record', async (req, res) => {
 
     // 插入记录
     const { data: record, error } = await supabaseAdmin
-      .from('game_records')
+      .from('minesweeper_records')
       .insert({
         user_id: supabase_uid,
         difficulty,
@@ -61,7 +61,7 @@ router.post('/record', async (req, res) => {
     let isNewBest = false;
     if (result === 'win') {
       const { data: prevBest } = await supabaseAdmin
-        .from('game_records')
+        .from('minesweeper_records')
         .select('time_seconds')
         .eq('user_id', supabase_uid)
         .eq('difficulty', difficulty)
@@ -75,7 +75,7 @@ router.post('/record', async (req, res) => {
       // 双重确认：检查是否有其他记录比当前更快
       if (isNewBest) {
         const { data: allWins } = await supabaseAdmin
-          .from('game_records')
+          .from('minesweeper_records')
           .select('time_seconds')
           .eq('user_id', supabase_uid)
           .eq('difficulty', difficulty)
@@ -113,7 +113,7 @@ router.get('/records', async (req, res) => {
     const parsedOffset = parseInt(offset) || 0;
 
     let query = supabaseAdmin
-      .from('game_records')
+      .from('minesweeper_records')
       .select('*', { count: 'exact' })
       .eq('user_id', supabase_uid)
       .order('completed_at', { ascending: false })

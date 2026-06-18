@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
     const parsedOffset = parseInt(offset) || 0;
 
     // 使用窗口函数获取每个用户的最佳时间
-    const { data, error } = await supabaseAdmin.rpc('get_leaderboard', {
+    const { data, error } = await supabaseAdmin.rpc('get_minesweeper_leaderboard', {
       p_difficulty: difficulty,
       p_limit: parsedLimit,
       p_offset: parsedOffset
@@ -29,12 +29,12 @@ router.get('/', async (req, res) => {
     if (error) {
       // 如果 RPC 不存在，使用直接查询
       const { data: records, error: queryError, count } = await supabaseAdmin
-        .from('game_records')
+        .from('minesweeper_records')
         .select(`
           id,
           time_seconds,
           completed_at,
-          user:user_id ( nickname )
+          user:minesweeper_users!user_id ( nickname )
         `, { count: 'exact' })
         .eq('difficulty', difficulty)
         .eq('result', 'win')

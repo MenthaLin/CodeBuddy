@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config();
 
+const { supabaseAdmin } = require('./db');
 const userRoutes = require('./routes/user');
 const gameRoutes = require('./routes/game');
 const leaderboardRoutes = require('./routes/leaderboard');
@@ -39,7 +40,14 @@ app.use(express.json({ limit: '1mb' }));
 // 静态文件服务（前端页面）
 app.use(express.static(path.join(__dirname, '..')));
 
-// API 路由
+// API 路由 - Supabase 不可用时返回提示
+app.use('/api', (req, res, next) => {
+  if (!supabaseAdmin && req.path !== '/health') {
+    return res.status(503).json({ success: false, error: '数据库未配置，排行榜/记录功能暂不可用' });
+  }
+  next();
+});
+
 app.use('/api/user', userRoutes);
 app.use('/api/game', gameRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);

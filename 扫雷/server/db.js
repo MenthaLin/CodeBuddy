@@ -4,12 +4,14 @@ require('dotenv').config();
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('❌ 缺少 Supabase 配置，请检查 .env 文件');
-  process.exit(1);
-}
+let supabaseAdmin = null;
 
-// Supabase 客户端（RLS 策略已设为宽松模式，anon key 即可操作）
-const supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey);
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.warn('⚠️  未配置 Supabase，排行榜/记录功能不可用（游戏仍可正常游玩）');
+  console.warn('   如需使用完整功能，请复制 .env.example 为 .env 并填入配置');
+} else {
+  // Supabase 客户端（RLS 策略已设为宽松模式，anon key 即可操作）
+  supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey);
+}
 
 module.exports = { supabaseAdmin };
